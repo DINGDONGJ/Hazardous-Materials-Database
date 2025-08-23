@@ -37,8 +37,8 @@
 
 #### 1. 克隆项目
 ```bash
-git clone <repository-url>
-cd danger-chemical-query-system
+git clone https://github.com/DINGDONGJ/Hazardous-Materials-Database.git
+cd Hazardous-Materials-Database
 ```
 
 #### 2. 创建虚拟环境
@@ -67,6 +67,7 @@ CREATE DATABASE hazardous_chemicals;
 EXIT;
 
 # 使用提供的SQL脚本初始化数据库和导入数据
+# 注意：请先确保SQL文件存在于项目根目录
 mysql -u root -p hazardous_chemicals < hazardous_chemicals_localhost-2025_08_21_22_25_59-dump.sql
 ```
 
@@ -122,7 +123,12 @@ mysql -u root -p hazardous_chemicals < "hazardous_chemicals_localhost-2025_08_21
 # mysql> source hazardous_chemicals_localhost-2025_08_21_22_25_59-dump.sql;
 ```
 
-详细的数据结构和使用说明请参考 [数据指南](docs/DATA_GUIDE.md)。
+**注意**：如果SQL文件不存在，请使用CSV文件和构建脚本：
+```bash
+python scripts/build_vector_database.py
+```
+
+详细的数据结构和使用说明请参考本README文档。
 
 ## 📖 使用说明
 
@@ -324,7 +330,7 @@ results = handler.semantic_search("锂电池", top_k=10)
 #### 2. 向量数据库加载失败
 ```
 错误: 向量索引加载失败
-解决: 运行 python scripts/build_vector_database.py 重新构建向量数据库
+解决: 检查 data/vector_db/ 目录是否存在，或运行 python scripts/build_vector_database.py 重新构建向量数据库
 ```
 
 #### 3. 搜索结果为空
@@ -426,14 +432,8 @@ Hazardous-Materials-Database-main/
 │       ├── faiss_index.index     # FAISS向量索引
 │       ├── metadata.json         # 元数据
 │       └── vectorizer.pkl        # 向量化器
-├── docs/                         # 文档目录
-│   ├── DATA_GUIDE.md             # 数据指南
-│   ├── API_EXAMPLES.md           # API示例
-│   ├── INSTALL.md                # 安装指南
-│   └── PERFORMANCE.md            # 性能报告
 ├── requirements.txt              # Python依赖列表
 ├── .env.example                  # 环境变量示例
-├── hazardous_chemicals_localhost-2025_08_21_22_25_59-dump.sql  # 数据库初始化脚本
 └── 附录A.md                      # 法规附录文档
 ```
 
@@ -483,14 +483,14 @@ def _expand_search_terms(self, query: str) -> List[str]:
 
 ### 测试
 
-运行单元测试：
+运行系统测试：
 ```bash
-python -m pytest tests/
+python scripts/test_vector_system.py --interactive
 ```
 
 运行性能测试：
 ```bash
-python scripts/test_vector_system.py --performance
+python scripts/test_vector_system.py --help
 ```
 
 ### 贡献指南
@@ -503,16 +503,9 @@ python scripts/test_vector_system.py --performance
 
 ## 📄 许可证
 
-本项目采用MIT许可证。详见LICENSE文件。
+本项目采用MIT许可证。
 
 ## 📚 文档索引
-
-### 核心文档
-- **[README.md](README.md)** - 项目主要文档（当前文档）
-- **[数据指南](docs/DATA_GUIDE.md)** - 数据文件详细说明和使用指南
-- **[安装指南](docs/INSTALL.md)** - 详细的安装和配置说明
-- **[API示例](docs/API_EXAMPLES.md)** - 完整的API使用示例
-- **[性能报告](docs/PERFORMANCE.md)** - 性能测试和优化指南
 
 ### 配置文件
 - **[.env.example](.env.example)** - 环境变量配置示例
@@ -523,9 +516,7 @@ python scripts/test_vector_system.py --performance
 
 ## 🤝 支持
 
-如有问题或建议，请：
-- 提交Issue
-- 查看相关文档：[docs/](docs/)
+如有问题或建议，请提交Issue。
 
 ---
 
